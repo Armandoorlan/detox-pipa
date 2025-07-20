@@ -1,0 +1,58 @@
+# Enable PWA support
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # Allow access to manifest.json
+    RewriteRule ^manifest\.json$ - [L]
+    
+    # Allow access to service worker
+    RewriteRule ^sw\.js$ - [L]
+    
+    # Allow access to public assets
+    RewriteRule ^public/ - [L]
+    
+    # Allow access to upload directory
+    RewriteRule ^upload/ - [L]
+</IfModule>
+
+# Set proper MIME types
+<IfModule mod_mime.c>
+    AddType application/manifest+json .json
+    AddType application/json .json
+    AddType image/webp .webp
+    AddType image/svg+xml .svg
+</IfModule>
+
+# Enable CORS for PWA
+<IfModule mod_headers.c>
+    Header always set Access-Control-Allow-Origin "*"
+    Header always set Access-Control-Allow-Methods "GET, POST, OPTIONS"
+    Header always set Access-Control-Allow-Headers "Content-Type"
+</IfModule>
+
+# Cache control for static assets
+<IfModule mod_expires.c>
+    ExpiresActive On
+    
+    # Images
+    ExpiresByType image/jpeg "access plus 1 month"
+    ExpiresByType image/png "access plus 1 month"
+    ExpiresByType image/webp "access plus 1 month"
+    ExpiresByType image/svg+xml "access plus 1 month"
+    
+    # CSS and JavaScript
+    ExpiresByType text/css "access plus 1 week"
+    ExpiresByType application/javascript "access plus 1 week"
+    
+    # JSON files
+    ExpiresByType application/json "access plus 1 day"
+    ExpiresByType application/manifest+json "access plus 1 day"
+</IfModule>
+
+# Security headers
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options nosniff
+    Header always set X-Frame-Options DENY
+    Header always set X-XSS-Protection "1; mode=block"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule> 
